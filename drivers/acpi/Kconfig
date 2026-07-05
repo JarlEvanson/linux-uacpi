@@ -44,6 +44,18 @@ menuconfig ACPI
 
 if ACPI
 
+choice
+	prompt "ACPI Implementation"
+	default ACPI_ACPICA
+
+config ACPI_ACPICA
+	bool "ACPICA"
+
+config ACPI_UACPI
+	bool "uACPI"
+
+endchoice
+
 config ACPI_LEGACY_TABLES_LOOKUP
 	bool
 
