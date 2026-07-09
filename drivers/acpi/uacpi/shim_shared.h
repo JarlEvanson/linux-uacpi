@@ -79,6 +79,73 @@ static inline acpi_handle acpi_handle_from_node(uacpi_namespace_node *node)
 	return node;
 }
 
+static inline uacpi_status uacpi_to_acpi_type(uacpi_object_type in,
+					      acpi_object_type *out)
+{
+	if (!out)
+		return UACPI_STATUS_INVALID_ARGUMENT;
+
+	switch (in) {
+	case UACPI_OBJECT_UNINITIALIZED:
+		acpi_os_printf(
+			"ACPI: unrecognized type %s given to uacpi_to_acpi_type\n",
+			uacpi_object_type_to_string(in));
+		return UACPI_STATUS_UNIMPLEMENTED;
+	case UACPI_OBJECT_INTEGER:
+		*out = ACPI_TYPE_INTEGER;
+		break;
+	case UACPI_OBJECT_STRING:
+		*out = ACPI_TYPE_STRING;
+		break;
+	case UACPI_OBJECT_BUFFER:
+		*out = ACPI_TYPE_BUFFER;
+		break;
+	case UACPI_OBJECT_PACKAGE:
+		*out = ACPI_TYPE_PACKAGE;
+		break;
+	case UACPI_OBJECT_FIELD_UNIT:
+		*out = ACPI_TYPE_FIELD_UNIT;
+		break;
+	case UACPI_OBJECT_DEVICE:
+		*out = ACPI_TYPE_DEVICE;
+		break;
+	case UACPI_OBJECT_EVENT:
+		*out = ACPI_TYPE_EVENT;
+		break;
+	case UACPI_OBJECT_METHOD:
+		*out = ACPI_TYPE_METHOD;
+		break;
+	case UACPI_OBJECT_MUTEX:
+		*out = ACPI_TYPE_MUTEX;
+		break;
+	case UACPI_OBJECT_OPERATION_REGION:
+		*out = ACPI_TYPE_REGION;
+		break;
+	case UACPI_OBJECT_POWER_RESOURCE:
+		*out = ACPI_TYPE_POWER;
+		break;
+	case UACPI_OBJECT_PROCESSOR:
+		*out = ACPI_TYPE_PROCESSOR;
+		break;
+	case UACPI_OBJECT_THERMAL_ZONE:
+		*out = ACPI_TYPE_THERMAL;
+		break;
+	case UACPI_OBJECT_BUFFER_FIELD:
+		*out = ACPI_TYPE_BUFFER_FIELD;
+		break;
+	case UACPI_OBJECT_DEBUG:
+		*out = ACPI_TYPE_DEBUG_OBJECT;
+		break;
+	default:
+		acpi_os_printf(
+			"ACPI: unrecognized type %s given to uacpi_to_acpi_type\n",
+			uacpi_object_type_to_string(in));
+		return UACPI_STATUS_UNIMPLEMENTED;
+	}
+
+	return UACPI_STATUS_OK;
+}
+
 static inline uacpi_status
 acpi_type_to_uacpi_type_bits(acpi_object_type in, uacpi_object_type_bits *out)
 {
