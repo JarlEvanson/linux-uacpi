@@ -4,6 +4,9 @@
 
 #include <uacpi/status.h>
 
+void shim_tables_initialize(void);
+void shim_tables_deinitialize(void);
+
 static inline acpi_status uacpi_convert_status(uacpi_status status)
 {
 	switch (status) {

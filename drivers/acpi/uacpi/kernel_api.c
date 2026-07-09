@@ -585,6 +585,8 @@ uacpi_status uacpi_kernel_initialize(uacpi_init_level current_init_lvl)
 					   WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
 		if (!uacpi_wq)
 			return UACPI_STATUS_OUT_OF_MEMORY;
+
+		shim_tables_initialize();
 	}
 
 	return UACPI_STATUS_OK;
@@ -597,4 +599,6 @@ void uacpi_kernel_deinitialize(void)
 		destroy_workqueue(uacpi_wq);
 		uacpi_wq = NULL;
 	}
+
+	shim_tables_deinitialize();
 }
