@@ -2,10 +2,15 @@
 
 #include <linux/acpi.h>
 
+#include <uacpi/namespace.h>
 #include <uacpi/status.h>
+#include <uacpi/types.h>
 
 void shim_tables_initialize(void);
 void shim_tables_deinitialize(void);
+
+uacpi_status shim_namespace_initialize(void);
+void shim_namespace_deinitialize(void);
 
 static inline acpi_status uacpi_convert_status(uacpi_status status)
 {
@@ -56,4 +61,85 @@ static inline acpi_status uacpi_convert_status(uacpi_status status)
 			return AE_AML_INTERNAL;
 		return AE_ERROR;
 	}
+}
+
+static inline uacpi_namespace_node *uacpi_node_from_handle(acpi_handle handle)
+{
+	if (!handle || handle == ACPI_ROOT_OBJECT)
+		return uacpi_namespace_root();
+
+	return handle;
+}
+
+static inline acpi_handle acpi_handle_from_node(uacpi_namespace_node *node)
+{
+	if (!node || node == uacpi_namespace_root())
+		return ACPI_ROOT_OBJECT;
+
+	return node;
+}
+
+static inline uacpi_status
+acpi_type_to_uacpi_type_bits(acpi_object_type in, uacpi_object_type_bits *out)
+{
+	if (!out)
+		return UACPI_STATUS_INVALID_ARGUMENT;
+
+	switch (in) {
+	case ACPI_TYPE_ANY:
+		*out = UACPI_OBJECT_ANY_BIT;
+		break;
+	case ACPI_TYPE_INTEGER:
+		*out = UACPI_OBJECT_INTEGER_BIT;
+		break;
+	case ACPI_TYPE_STRING:
+		*out = UACPI_OBJECT_STRING_BIT;
+		break;
+	case ACPI_TYPE_BUFFER:
+		*out = UACPI_OBJECT_BUFFER_BIT;
+		break;
+	case ACPI_TYPE_PACKAGE:
+		*out = UACPI_OBJECT_PACKAGE_BIT;
+		break;
+	case ACPI_TYPE_FIELD_UNIT:
+		*out = UACPI_OBJECT_FIELD_UNIT_BIT;
+		break;
+	case ACPI_TYPE_DEVICE:
+		*out = UACPI_OBJECT_DEVICE_BIT;
+		break;
+	case ACPI_TYPE_EVENT:
+		*out = UACPI_OBJECT_EVENT_BIT;
+		break;
+	case ACPI_TYPE_METHOD:
+		*out = UACPI_OBJECT_METHOD_BIT;
+		break;
+	case ACPI_TYPE_MUTEX:
+		*out = UACPI_OBJECT_MUTEX_BIT;
+		break;
+	case ACPI_TYPE_REGION:
+		*out = UACPI_OBJECT_OPERATION_REGION_BIT;
+		break;
+	case ACPI_TYPE_POWER:
+		*out = UACPI_OBJECT_POWER_RESOURCE_BIT;
+		break;
+	case ACPI_TYPE_PROCESSOR:
+		*out = UACPI_OBJECT_PROCESSOR_BIT;
+		break;
+	case ACPI_TYPE_THERMAL:
+		*out = UACPI_OBJECT_THERMAL_ZONE_BIT;
+		break;
+	case ACPI_TYPE_BUFFER_FIELD:
+		*out = UACPI_OBJECT_BUFFER_FIELD_BIT;
+		break;
+	case ACPI_TYPE_DEBUG_OBJECT:
+		*out = UACPI_OBJECT_DEBUG_BIT;
+		break;
+	default:
+		acpi_os_printf(
+			"ACPI: unrecognized type %x given to acpi_type_to_uacpi_type_bits\n",
+			in);
+		return UACPI_STATUS_UNIMPLEMENTED;
+	}
+
+	return UACPI_STATUS_OK;
 }
