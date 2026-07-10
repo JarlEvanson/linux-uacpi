@@ -90,10 +90,8 @@ static inline uacpi_status uacpi_to_acpi_type(uacpi_object_type in,
 
 	switch (in) {
 	case UACPI_OBJECT_UNINITIALIZED:
-		acpi_os_printf(
-			"ACPI: unrecognized type %s given to uacpi_to_acpi_type\n",
-			uacpi_object_type_to_string(in));
-		return UACPI_STATUS_UNIMPLEMENTED;
+		*out = ACPI_TYPE_ANY;
+		break;
 	case UACPI_OBJECT_INTEGER:
 		*out = ACPI_TYPE_INTEGER;
 		break;

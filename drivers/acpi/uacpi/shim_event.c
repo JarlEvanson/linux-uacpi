@@ -1,8 +1,13 @@
 #include <linux/acpi.h>
 
+#include <uacpi/event.h>
+
+#include "shim_shared.h"
+
 acpi_status acpi_enable_gpe(acpi_handle gpe_device, u32 gpe_number)
 {
-	BUG();
+	return acpi_enable_gpe_cond(gpe_device, gpe_number,
+				    ACPI_GPE_DISPATCH_MASK);
 }
 
 acpi_status acpi_enable_gpe_cond(acpi_handle gpe_device, u32 gpe_number,
@@ -13,27 +18,58 @@ acpi_status acpi_enable_gpe_cond(acpi_handle gpe_device, u32 gpe_number,
 
 acpi_status acpi_disable_gpe(acpi_handle gpe_device, u32 gpe_number)
 {
-	BUG();
+	uacpi_namespace_node *device;
+	uacpi_status st;
+
+	device = (uacpi_namespace_node *)gpe_device;
+	st = uacpi_disable_gpe(device, gpe_number);
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_clear_gpe(acpi_handle gpe_device, u32 gpe_number)
 {
-	BUG();
+	uacpi_namespace_node *device;
+	uacpi_status st;
+
+	device = (uacpi_namespace_node *)gpe_device;
+	st = uacpi_clear_gpe(device, gpe_number);
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_set_gpe(acpi_handle gpe_device, u32 gpe_number, u8 action)
 {
-	BUG();
+	uacpi_namespace_node *device;
+	uacpi_status st;
+
+	device = (uacpi_namespace_node *)gpe_device;
+	if (action == ACPI_GPE_ENABLE)
+		st = uacpi_resume_gpe(device, gpe_number);
+	else
+		st = uacpi_suspend_gpe(device, gpe_number);
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_mask_gpe(acpi_handle gpe_device, u32 gpe_number, u8 is_masked)
 {
-	BUG();
+	uacpi_namespace_node *device;
+	uacpi_status st;
+
+	device = (uacpi_namespace_node *)gpe_device;
+	if (is_masked)
+		st = uacpi_mask_gpe(device, gpe_number);
+	else
+		st = uacpi_unmask_gpe(device, gpe_number);
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_finish_gpe(acpi_handle gpe_device, u32 gpe_number)
 {
-	BUG();
+	uacpi_namespace_node *device;
+	uacpi_status st;
+
+	device = (uacpi_namespace_node *)gpe_device;
+	st = uacpi_finish_handling_gpe(device, gpe_number);
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_setup_gpe_for_wake(acpi_handle wake_device,
@@ -71,27 +107,42 @@ u32 acpi_any_gpe_status_set(u32 gpe_skip_number)
 
 acpi_status acpi_update_all_gpes(void)
 {
-	BUG();
+	uacpi_status st;
+
+	st = uacpi_finalize_gpe_initialization();
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_disable_all_gpes(void)
 {
-	BUG();
+	uacpi_status st;
+
+	st = uacpi_disable_all_gpes();
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_hw_disable_all_gpes(void)
 {
-	BUG();
+	uacpi_status st;
+
+	st = uacpi_disable_all_gpes();
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_enable_all_runtime_gpes(void)
 {
-	BUG();
+	uacpi_status st;
+
+	st = uacpi_enable_all_runtime_gpes();
+	return uacpi_convert_status(st);
 }
 
 acpi_status acpi_enable_all_wakeup_gpes(void)
 {
-	BUG();
+	uacpi_status st;
+
+	st = uacpi_enable_all_wake_gpes();
+	return uacpi_convert_status(st);
 }
 
 acpi_status
