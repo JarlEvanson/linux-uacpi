@@ -592,6 +592,8 @@ uacpi_status uacpi_kernel_initialize(uacpi_init_level current_init_lvl)
 		st = shim_namespace_initialize();
 		if (st != UACPI_STATUS_OK)
 			return st;
+
+		shim_fixed_event_initialize();
 	}
 
 	return UACPI_STATUS_OK;
@@ -607,4 +609,5 @@ void uacpi_kernel_deinitialize(void)
 
 	shim_tables_deinitialize();
 	shim_namespace_deinitialize();
+	shim_fixed_event_deinitialize();
 }

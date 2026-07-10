@@ -12,6 +12,9 @@ void shim_tables_deinitialize(void);
 uacpi_status shim_namespace_initialize(void);
 void shim_namespace_deinitialize(void);
 
+void shim_fixed_event_initialize(void);
+void shim_fixed_event_deinitialize(void);
+
 static inline acpi_status uacpi_convert_status(uacpi_status status)
 {
 	switch (status) {
