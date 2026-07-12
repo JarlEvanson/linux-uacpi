@@ -35,6 +35,7 @@ acpi-y += shim_object.o
 acpi-y += shim_op_region.o
 acpi-y += shim_output.o
 acpi-y += shim_resource.o
+acpi-y += shim_shared.o
 acpi-y += shim_sleep.o
 acpi-y += shim_subsystem.o
 acpi-y += shim_tables.o
