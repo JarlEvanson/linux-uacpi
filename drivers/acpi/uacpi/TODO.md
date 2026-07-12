@@ -22,3 +22,7 @@ Determine how to support/utilize the following globals:
 # Namespace
 
 - Determine how to call attached data handlers on namespace destruction.
+
+# Object
+
+- Implement remainder of ACPI object conversion functionality.
