@@ -704,16 +704,28 @@ uacpi_status uacpi_kernel_wait_for_work_completion(void)
 
 uacpi_status uacpi_kernel_initialize(uacpi_init_level current_init_lvl)
 {
+	uacpi_status st;
+
 	if (current_init_lvl == UACPI_INIT_LEVEL_EARLY) {
 		uacpi_wq = alloc_workqueue("uacpi_wq",
 					   WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
-		if (!uacpi_wq)
-			return UACPI_STATUS_OUT_OF_MEMORY;
+		if (!uacpi_wq) {
+			st = UACPI_STATUS_OUT_OF_MEMORY;
+			goto exit;
+		}
+
+		st = shim_namespace_initialize();
+		if (st != UACPI_STATUS_OK)
+			goto exit;
 
 		shim_tables_initialize();
 	}
 
 	return UACPI_STATUS_OK;
+
+exit:
+	uacpi_kernel_deinitialize();
+	return st;
 }
 
 void uacpi_kernel_deinitialize(void)
@@ -724,5 +736,6 @@ void uacpi_kernel_deinitialize(void)
 		uacpi_wq = NULL;
 	}
 
+	shim_namespace_deinitialize();
 	shim_tables_deinitialize();
 }

@@ -19,3 +19,6 @@ Determine how to support/utilize the following globals:
 - `acpi_gbl_method_executing`
 - `acpi_current_gpe_count`
 
+# Namespace
+
+- Determine how to call attached data handlers on namespace destruction.
