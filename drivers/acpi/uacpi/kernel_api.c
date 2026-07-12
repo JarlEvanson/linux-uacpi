@@ -714,6 +714,7 @@ uacpi_status uacpi_kernel_initialize(uacpi_init_level current_init_lvl)
 			goto exit;
 		}
 
+		shim_fixed_event_initialize();
 		st = shim_namespace_initialize();
 		if (st != UACPI_STATUS_OK)
 			goto exit;
@@ -736,6 +737,7 @@ void uacpi_kernel_deinitialize(void)
 		uacpi_wq = NULL;
 	}
 
+	shim_fixed_event_deinitialize();
 	shim_namespace_deinitialize();
 	shim_tables_deinitialize();
 }

@@ -7,6 +7,9 @@
 #include <uacpi/namespace.h>
 #include <uacpi/status.h>
 
+void shim_fixed_event_initialize(void);
+void shim_fixed_event_deinitialize(void);
+
 uacpi_status shim_namespace_initialize(void);
 void shim_namespace_deinitialize(void);
 
@@ -226,4 +229,30 @@ acpi_type_to_uacpi_type_bits(acpi_object_type in, uacpi_object_type_bits *out)
 	}
 
 	return AE_OK;
+}
+
+static inline acpi_event_status uacpi_to_acpi_event_info(uacpi_event_info info)
+{
+	acpi_event_status event_status;
+
+	*event_status = 0;
+	if (info & UACPI_EVENT_INFO_ENABLED)
+		*event_status |= ACPI_EVENT_FLAG_ENABLED;
+
+	if (info & UACPI_EVENT_INFO_ENABLED_FOR_WAKE)
+		*event_status |= ACPI_EVENT_FLAG_WAKE_ENABLE;
+
+	if (info & UACPI_EVENT_INFO_MASKED)
+		*event_status |= ACPI_EVENT_FLAG_MASKED;
+
+	if (info & UACPI_EVENT_INFO_HAS_HANDLER)
+		*event_status |= ACPI_EVENT_FLAG_HAS_HANDLER;
+
+	if (info & UACPI_EVENT_INFO_HW_ENABLED)
+		*event_status |= ACPI_EVENT_FLAG_ENABLE_SET;
+
+	if (info & UACPI_EVENT_INFO_HW_STATUS)
+		*event_status |= ACPI_EVENT_FLAG_STATUS_SET;
+
+	return event_status;
 }
