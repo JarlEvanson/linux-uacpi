@@ -5,6 +5,7 @@
 #include <uacpi/kernel_api.h>
 #include <uacpi/log.h>
 #include <uacpi/namespace.h>
+#include <uacpi/opregion.h>
 #include <uacpi/status.h>
 
 void shim_fixed_event_initialize(void);
@@ -255,4 +256,57 @@ static inline acpi_event_status uacpi_to_acpi_event_info(uacpi_event_info info)
 		*event_status |= ACPI_EVENT_FLAG_STATUS_SET;
 
 	return event_status;
+}
+
+static inline acpi_status acpi_to_uacpi_address_space(acpi_adr_space_type in,
+						      uacpi_address_space *out)
+{
+	switch (in) {
+	case ACPI_ADR_SPACE_SYSTEM_MEMORY:
+		*out = UACPI_ADDRESS_SPACE_SYSTEM_MEMORY;
+		break;
+	case ACPI_ADR_SPACE_SYSTEM_IO:
+		*out = UACPI_ADDRESS_SPACE_SYSTEM_IO;
+		break;
+	case ACPI_ADR_SPACE_PCI_CONFIG:
+		*out = UACPI_ADDRESS_SPACE_PCI_CONFIG;
+		break;
+	case ACPI_ADR_SPACE_EC:
+		*out = UACPI_ADDRESS_SPACE_EMBEDDED_CONTROLLER;
+		break;
+	case ACPI_ADR_SPACE_SMBUS:
+		*out = UACPI_ADDRESS_SPACE_SMBUS;
+		break;
+	case ACPI_ADR_SPACE_CMOS:
+		*out = UACPI_ADDRESS_SPACE_SYSTEM_CMOS;
+		break;
+	case ACPI_ADR_SPACE_PCI_BAR_TARGET:
+		*out = UACPI_ADDRESS_SPACE_PCI_BAR_TARGET;
+		break;
+	case ACPI_ADR_SPACE_IPMI:
+		*out = UACPI_ADDRESS_SPACE_IPMI;
+		break;
+	case ACPI_ADR_SPACE_GPIO:
+		*out = UACPI_ADDRESS_SPACE_GENERAL_PURPOSE_IO;
+		break;
+	case ACPI_ADR_SPACE_GSBUS:
+		*out = UACPI_ADDRESS_SPACE_GENERIC_SERIAL_BUS;
+		break;
+	case ACPI_ADR_SPACE_PLATFORM_COMM:
+		*out = UACPI_ADDRESS_SPACE_PCC;
+		break;
+	case ACPI_ADR_SPACE_PLATFORM_RT:
+		*out = UACPI_ADDRESS_SPACE_PRM;
+		break;
+	case ACPI_ADR_SPACE_FIXED_HARDWARE:
+		*out = UACPI_ADDRESS_SPACE_FFIXEDHW;
+		break;
+	default:
+		shim_error(
+			"acpi_to_uacpi_address_space does not support address space id %u\n",
+			in);
+		return AE_SUPPORT;
+	}
+
+	return AE_OK;
 }
