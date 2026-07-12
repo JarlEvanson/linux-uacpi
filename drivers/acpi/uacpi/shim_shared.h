@@ -6,6 +6,9 @@
 #include <uacpi/log.h>
 #include <uacpi/status.h>
 
+void shim_tables_initialize(void);
+void shim_tables_deinitialize(void);
+
 /* logging interface and implementation adapted from uacpi/internal/log.h */
 bool shim_should_log(uacpi_log_level level);
 
